@@ -1,0 +1,77 @@
+decade,genre_names,count
+1990,Action,297
+1990,Adventure,187
+1990,Animation,102
+1990,Comedy,334
+1990,Crime,194
+1990,Documentary,3
+1990,Drama,446
+1990,Family,136
+1990,Fantasy,138
+1990,History,34
+1990,Horror,116
+1990,Music,17
+1990,Mystery,78
+1990,Romance,194
+1990,Science Fiction,145
+1990,TV Movie,22
+1990,Thriller,264
+1990,War,19
+1990,Western,10
+2000,Action,304
+2000,Adventure,268
+2000,Animation,166
+2000,Comedy,359
+2000,Crime,142
+2000,Documentary,7
+2000,Drama,345
+2000,Family,206
+2000,Fantasy,181
+2000,History,31
+2000,Horror,127
+2000,Music,26
+2000,Mystery,91
+2000,Romance,176
+2000,Science Fiction,135
+2000,TV Movie,23
+2000,Thriller,265
+2000,War,34
+2000,Western,6
+2010,Action,392
+2010,Adventure,291
+2010,Animation,161
+2010,Comedy,261
+2010,Crime,118
+2010,Documentary,9
+2010,Drama,308
+2010,Family,153
+2010,Fantasy,169
+2010,History,24
+2010,Horror,145
+2010,Music,19
+2010,Mystery,80
+2010,Romance,139
+2010,Science Fiction,176
+2010,TV Movie,12
+2010,Thriller,269
+2010,War,21
+2010,Western,9
+2020,Action,164
+2020,Adventure,119
+2020,Animation,73
+2020,Comedy,109
+2020,Crime,28
+2020,Documentary,4
+2020,Drama,102
+2020,Family,75
+2020,Fantasy,89
+2020,History,12
+2020,Horror,68
+2020,Music,6
+2020,Mystery,26
+2020,Romance,54
+2020,Science Fiction,72
+2020,TV Movie,6
+2020,Thriller,96
+2020,War,14
+2020,Western,3

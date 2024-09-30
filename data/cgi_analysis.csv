@@ -1,0 +1,77 @@
+genre_names,decade,count
+Action,1990,297
+Action,2000,298
+Action,2010,392
+Action,2020,164
+Adventure,1990,187
+Adventure,2000,267
+Adventure,2010,291
+Adventure,2020,124
+Animation,1990,102
+Animation,2000,166
+Animation,2010,161
+Animation,2020,73
+Comedy,1990,335
+Comedy,2000,361
+Comedy,2010,261
+Comedy,2020,109
+Crime,1990,193
+Crime,2000,142
+Crime,2010,118
+Crime,2020,30
+Documentary,1990,3
+Documentary,2000,7
+Documentary,2010,9
+Documentary,2020,4
+Drama,1990,446
+Drama,2000,346
+Drama,2010,308
+Drama,2020,103
+Family,1990,136
+Family,2000,207
+Family,2010,153
+Family,2020,73
+Fantasy,1990,137
+Fantasy,2000,180
+Fantasy,2010,169
+Fantasy,2020,89
+History,1990,34
+History,2000,30
+History,2010,24
+History,2020,12
+Horror,1990,115
+Horror,2000,128
+Horror,2010,145
+Horror,2020,69
+Music,1990,17
+Music,2000,26
+Music,2010,19
+Music,2020,6
+Mystery,1990,78
+Mystery,2000,93
+Mystery,2010,80
+Mystery,2020,27
+Romance,1990,194
+Romance,2000,178
+Romance,2010,139
+Romance,2020,55
+Science Fiction,1990,145
+Science Fiction,2000,132
+Science Fiction,2010,176
+Science Fiction,2020,72
+TV Movie,1990,22
+TV Movie,2000,23
+TV Movie,2010,12
+TV Movie,2020,5
+Thriller,1990,265
+Thriller,2000,267
+Thriller,2010,269
+Thriller,2020,98
+War,1990,19
+War,2000,34
+War,2010,21
+War,2020,13
+Western,1990,10
+Western,2000,6
+Western,2010,9
+Western,2020,3
