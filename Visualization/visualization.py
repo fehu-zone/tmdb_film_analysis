@@ -1,27 +1,35 @@
-import pandas as pd  # Veriyi yüklemek için
-import matplotlib.pyplot as plt  # Grafikler çizmek için
-import seaborn as sns  # Grafik stilini iyileştirmek için
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Veri dosyasını 'data' klasöründen yükleme
-df = pd.read_pickle('../data/movies_data.pkl')  # 'data/movies_data.pkl' dosyasını yüklüyoruz
+# Dosya yolu
+file_path = os.path.join(os.path.dirname(__file__), '../data/movies_data.pkl')
+df = pd.read_pickle(file_path)  # Dosyayı buradan yükle
 
-# Grafik stilini belirleyelim
-sns.set(style="whitegrid")
+# 'release_date' bilgisi boşsa, varsayılan bir tarih ekliyoruz
+df['release_date'] = df['release_date'].fillna('1900-01-01')
 
-# 1. Grafik: Film kategorilerine göre popülerlik
-plt.figure(figsize=(10, 6))
-sns.countplot(y='genre_names', data=df.explode('genre_names'), order=df.explode('genre_names')['genre_names'].value_counts().index)
-plt.title('Popüler Film Kategorileri (1930-2023)')
-plt.xlabel('Film Sayısı')
-plt.ylabel('Kategori')
-plt.tight_layout()
-plt.show()
+# 10 yıllık dönemleri gruplandırmak için 'decade' sütunu ekliyoruz
+df['decade'] = (df['release_date'].str[:4].astype(int) // 10) * 10
 
-# 2. Grafik: Yıllara göre filmlerin popülerlik trendi
-plt.figure(figsize=(10, 6))
-sns.lineplot(x=pd.to_datetime(df['release_date']).dt.year, y='popularity', data=df)
-plt.title('Yıllara Göre Filmlerin Popülerlik Trendi')
-plt.xlabel('Yıl')
-plt.ylabel('Popülerlik')
+# 'genre_names' sütununu patlatmak için 'explode' kullanıyoruz
+df_exploded = df.explode('genre_names')
+
+# Hangi film türlerinin hangi dönemde olduğunu sayıyoruz
+count_df = df_exploded.groupby(['genre_names', 'decade']).size().reset_index(name='count')
+
+# Sütun grafiği için Seaborn kullanarak görselleştirme
+plt.figure(figsize=(14, 8))
+sns.barplot(x='decade', y='count', hue='genre_names', data=count_df, palette='tab20', dodge=True)
+
+# Grafiği düzenleme
+plt.title("10 Yıllık Periyotlarla En Çok Çekilen Film Türleri", fontsize=16)
+plt.xlabel("Years", fontsize=12)
+plt.ylabel("Number Of Movies", fontsize=12)
+plt.xticks(rotation=45)
+plt.legend(title='Movie Genres', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.grid(axis='y')
+
 plt.tight_layout()
 plt.show()

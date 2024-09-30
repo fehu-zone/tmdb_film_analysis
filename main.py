@@ -1,82 +1,81 @@
-import requests  # API ile veri çekmek için gerekli kütüphane
-import pandas as pd  # Veriyi işlemek ve tablo olarak saklamak için
+import requests
+import pandas as pd
+import os
 
-# TMDb API anahtarını buraya ekliyoruz
-api_key = 'YOUR_TMDB_API_KEY'  # TMDb'den aldığın API anahtarını buraya yaz
+# 'data' klasörünün var olup olmadığını kontrol et, yoksa oluştur
+if not os.path.exists('data'):
+    os.makedirs('data')
 
-# TMDb'den film verilerini çekmek için kullanılacak temel URL
+# API anahtarını buraya ekliyoruz
+api_key = '14137c24b9825da634b9dbf967068220'
+
 base_url = "https://api.themoviedb.org/3/discover/movie"
 
-def get_movies_by_year(year, api_key):
+def get_movies_by_year(year, api_key, max_pages=5):
     """
-    Belirli bir yıldaki popüler filmleri TMDb API ile çeker.
-    Parametreler:
-        year (int): Filmlerin hangi yıldan çekileceğini belirler.
-        api_key (str): API anahtarını kullanarak TMDb'ye erişim sağlar.
+    Belirli bir yıl için TMDb API üzerinden film verilerini çeker.
+    max_pages: Her yıl için çekilecek sayfa sayısı (Her sayfada 20 film bulunur).
     """
-    # API'ye göndereceğimiz parametreler
-    params = {
-        'api_key': api_key,  # TMDb API anahtarı
-        'language': 'en-US',  # İngilizce sonuçlar
-        'sort_by': 'popularity.desc',  # Popülerliğe göre sıralama
-        'primary_release_year': year,  # Belirli bir yılın verilerini çekiyoruz
-        'page': 1  # İlk sayfayı çekiyoruz
-    }
+    all_movies = []
+    for page in range(1, max_pages + 1):
+        params = {
+            'api_key': api_key,
+            'language': 'en-US',
+            'sort_by': 'popularity.desc',
+            'primary_release_year': year,
+            'page': page
+        }
+        response = requests.get(base_url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            all_movies.extend(data['results'])
+        else:
+            print(f"Error for year {year}, page {page}: {response.status_code}")
+            break  # Eğer bir hata varsa, döngüden çıkıyoruz
+    return all_movies
 
-    # API'ye GET isteği gönderiyoruz
-    response = requests.get(base_url, params=params)
-
-    # Eğer başarılı bir cevap alırsak (status_code 200), veriyi al
-    if response.status_code == 200:
-        data = response.json()  # Cevabı JSON formatında alıyoruz
-        return data['results']  # Sonuçları döndürüyoruz
-    else:
-        print(f"Error: {response.status_code}")  # Eğer hata varsa, hata kodunu yazdır
-        return None
-
+# Genre adlarını almak için gerekli kodu burada ekle
 def get_genres(api_key):
-    """
-    TMDb API'den film türlerini (janr) çeker.
-    """
-    genre_url = "https://api.themoviedb.org/3/genre/movie/list"  # Film türleri için URL
+    genre_url = "https://api.themoviedb.org/3/genre/movie/list"
     params = {
-        'api_key': api_key,  # API anahtarını kullanıyoruz
-        'language': 'en-US'  # İngilizce sonuçlar
+        'api_key': api_key,
+        'language': 'en-US'
     }
-
-    # API'ye GET isteği gönderiyoruz
     response = requests.get(genre_url, params=params)
-
-    # Eğer başarılı bir cevap alırsak, janr verisini al
     if response.status_code == 200:
-        return response.json()['genres']  # Tüm janrları döndürüyoruz
+        return response.json()['genres']
     else:
-        print(f"Error: {response.status_code}")  # Eğer hata varsa, hata kodunu yazdır
+        print(f"Error: {response.status_code}")
         return None
 
-# Tüm film türlerini (janr) alıyoruz
+# Türleri id'lerinden isimlerine çevirebilmek için genre sözlüğünü oluştur
 genres = get_genres(api_key)
-# Janr ID'lerini, janr isimlerine eşleştiren bir sözlük oluşturuyoruz
 genre_dict = {genre['id']: genre['name'] for genre in genres}
 
-# 1930'lardan başlayarak her 10 yıllık dönem için en popüler filmleri çekiyoruz
-decades = [1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2023]
+# Tüm filmleri tutacak bir liste
+all_movies = []
 
-all_movies = []  # Tüm filmleri saklamak için boş bir liste
-
-# Her 10 yıllık dilim için verileri çekiyoruz
-for year in decades:
-    movies = get_movies_by_year(year, api_key)  # Yıl bazlı filmleri çekiyoruz
+# 1930'dan 2023'e kadar her 10 yılda en çok izlenen filmleri al
+for year in range(1930, 2024, 10):
+    movies = get_movies_by_year(year, api_key, max_pages=5)  # Her yıl için 5 sayfa veri çek
     if movies:
-        all_movies.extend(movies)  # Eğer film varsa, tüm filmleri listeye ekle
+        all_movies.extend(movies)  # Gelen filmleri listeye ekle
 
-# Çektiğimiz tüm verileri DataFrame'e çeviriyoruz
+# DataFrame oluştur
 df_all_movies = pd.DataFrame(all_movies)
 
-# Film türlerini (janr) DataFrame'e ekliyoruz
-df_all_movies['genre_names'] = df_all_movies['genre_ids'].apply(lambda x: [genre_dict.get(i) for i in x])
+# Genre adlarını DataFrame'e ekle
+genre_names = []
+for movie in all_movies:
+    movie_genres = movie.get('genre_ids', [])
+    genre_names.append([genre_dict.get(gid) for gid in movie_genres])
 
-# Veriyi 'data' klasörüne kaydediyoruz
-df_all_movies.to_pickle('data/movies_data.pkl')  # Veriyi 'data/movies_data.pkl' dosyasına kaydediyoruz
+df_all_movies['genre_names'] = genre_names
 
-print("Veri çekme işlemi tamamlandı ve dosyaya kaydedildi.")
+# Eğer DataFrame boşsa bir hata mesajı ver
+if df_all_movies.empty:
+    print("Hiçbir film verisi alınamadı.")
+else:
+    # Veriyi 'data/movies_data.pkl' dosyasına kaydediyoruz
+    df_all_movies.to_pickle('data/movies_data.pkl')
+    print(f"Toplam {len(df_all_movies)} film verisi alındı ve kaydedildi.")
