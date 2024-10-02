@@ -1,7 +1,10 @@
-import subprocess
+import pandas as pd
+from API_Operations.IMDBapiOperations import df_selected  # IMDb verisini içe aktar
+from Visualization.visualization import visualize_cgi_movies  # Görselleştirme fonksiyonunu içe aktar
 
-# API veri çekme işlemlerini tetikle
-subprocess.run(['python', 'API_Operations/apiOperations.py'])
+def main():
+    # CGI filmlerinin görselleştirilmesi
+    visualize_cgi_movies(df_selected)
 
-# CGI analizini ve görselleştirme işlemlerini tetikle
-subprocess.run(['python', 'visualization/visualization.py'])
+if __name__ == "__main__":
+    main()
